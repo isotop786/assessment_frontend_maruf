@@ -9,7 +9,7 @@
        <div class="row">
             <div v-for="product in products" :key="product._id" class="col-md-3">
                 <div id="cont" class="card p-2 card-img" >
-                    <img :src="product.image" class="card-img-top" alt="...">
+                    <img :src="product.image" class="card-img-top " alt="...">
                     <div class="card-body">
                         <h5 class="card-title">{{product.name}}</h5>
                         <p><strong>Category: </strong>{{product.type.toUpperCase()}}</p>
@@ -25,7 +25,7 @@
             </div>
        </div>
 
-       <!-- Modal -->
+       <!-- Bucket Modal -->
        <!-- Button trigger modal -->
             <button style="display:none" type="button" id="modalBtn" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
             </button>
@@ -63,7 +63,7 @@
             </div>
         </div>
         </div>
-       <!-- Modal Ends -->
+       <!-- Bucket Modal Ends -->
   </div>
 </template>
 
@@ -114,7 +114,14 @@ export default {
             this.currentProductName = name;
             this.currentProductImage = image
 
-            document.getElementById('modalBtn').click()
+            if(this.$store.state.bucketProducts.includes(id))
+            {
+                alert('This Product already exists in the bucket, can not add again')
+            }
+            else{
+                document.getElementById('modalBtn').click()
+            }
+
         }
     }
 }
@@ -125,7 +132,8 @@ export default {
 @media(min-width: 480px)
 {
     .card-img{
-        width: 16rem!important
+        width: 16rem!important;
+        /* height: 20vh!important; */
     }
 }
 

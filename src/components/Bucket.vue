@@ -55,15 +55,20 @@ export default {
             this.items = res.data.item
             // console.log(this.items)
 
-            // this.items.map(item=>console.log(item.product))
+            this.items.map(item=>{
+
+                if(!this.$store.state.bucketProducts.includes(item.product))
+                {
+                    this.$store.commit('SET_BUCKETPRODUCTS',item.product)
+                }
+
+                })
 
             this.items.map(item => {
                 axios.get(`/products/${item.product}`,config)
                 .then(res=>{
 
                     this.products.push(res.data.product)
-
-                    console.log(this.products)
                     
                 })
             })

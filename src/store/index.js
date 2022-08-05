@@ -16,6 +16,7 @@ export default new Vuex.Store({
     user: {},
     isAdmin: false,
     isAuthenticated : false,
+    bucketProducts:[]
     
   },
   getters: {
@@ -44,6 +45,12 @@ export default new Vuex.Store({
     SET_AUTH(state, payload)
     {
       state.isAuthenticated = payload;
+    },
+
+    SET_BUCKETPRODUCTS(state, payload)
+    {
+
+          state.bucketProducts.push(payload);
     }
     
   },
