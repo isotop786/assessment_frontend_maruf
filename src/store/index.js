@@ -49,8 +49,12 @@ export default new Vuex.Store({
 
     SET_BUCKETPRODUCTS(state, payload)
     {
-
           state.bucketProducts.push(payload);
+    },
+
+    CLEAR_BUCKET(state)
+    {
+      state.bucketProducts = [];
     }
     
   },

@@ -26,12 +26,9 @@
        </div>
 
        <!-- Bucket Modal -->
-       <!-- Button trigger modal -->
-            <button style="display:none" type="button" id="modalBtn" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
+            <button style="display:none" type="button" id="modalBtn" class="btn btn-primary" data-toggle="modal" data-target="#bucketModal">
             </button>
-
-    <!-- Modal -->
-        <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal fade" id="bucketModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
             <div class="modal-header">
@@ -57,13 +54,39 @@
                 </table>
             </div>
             <div class="modal-footer">
-                <button type="button" @click="quantity=1" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary">Save changes</button>
+                <button id="closeBtn" type="button" @click.prevent="quantity=1" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" @click.prevent="addToBucket" class="btn btn-success">Add To Bucket</button>
             </div>
             </div>
         </div>
         </div>
        <!-- Bucket Modal Ends -->
+
+       <!-- Alert Modal -->
+
+    <button style="display:none" type="button" id="alertBtn" class="btn btn-primary" data-toggle="modal" data-target="#alertModal">
+            </button>
+        <div class="modal fade" id="alertModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel"><span class="text-danger">Error</span></h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p class="text-danger font-weight-bolder">
+                    This product is already in the bucket, can not add again. Please add different product.
+                </p>
+            </div>
+            <div class="modal-footer">
+                <button id="closeBtn" type="button"  class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+            </div>
+        </div>
+        </div>
+       <!-- Alert Modal Ends -->
   </div>
 </template>
 
@@ -78,6 +101,7 @@ export default {
             currentID: null,
             currentProductName: '',
             currentProductImage:'',
+            config : {headers:{'Content-Type':'application/json', 'Authorization': 'Bearer '+this.$store.state.token}}
         }
     },
 
@@ -116,12 +140,38 @@ export default {
 
             if(this.$store.state.bucketProducts.includes(id))
             {
-                alert('This Product already exists in the bucket, can not add again')
+                // alert('This Product already exists in the bucket, can not add again')
+                document.getElementById('alertBtn').click();
             }
             else{
                 document.getElementById('modalBtn').click()
             }
 
+        },
+
+        addToBucket()
+        {
+            // data = {
+            //     quantity: this.quantity,
+            //     product: this.currentID,
+            //     user: this.$store.state.id
+            // }
+
+            axios.post('/buckets/',
+            {
+                quantity: this.quantity,
+                product: this.currentID,
+                user: this.$store.state.id
+            }
+            , this.config)
+            .then(res =>{
+                this.quantity =1;
+                document.getElementById('closeBtn').click();
+                this.$router.go();
+            })
+            .catch(err=>{
+                console.log("Error is "+err)
+            })
         }
     }
 }

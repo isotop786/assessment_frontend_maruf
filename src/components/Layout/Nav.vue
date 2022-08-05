@@ -8,31 +8,15 @@
 
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul class="navbar-nav mr-auto">
-                    <!-- <li class="nav-item active">
-                        <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Link</a>
-                    </li> -->
-                    <!-- <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-expanded="false">
-                        Dropdown
-                        </a>
-                        <div class="dropdown-menu">
-                        <a class="dropdown-item" href="#">Action</a>
-                        <a class="dropdown-item" href="#">Another action</a>
-                        <div class="dropdown-divider"></div>
-                        <a class="dropdown-item" href="#">Something else here</a>
-                        </div>
-                    </li> -->
-                    <!-- <li class="nav-item">
-                        <a class="nav-link disabled">Disabled</a>
-                    </li> -->
+                        <li v-if="this.$store.state.isAuthenticated" class="nav-item active">
+                                <router-link class="nav-link" to="/dashboard">Dashboard <span class="sr-only">(current)</span></router-link>
+                        </li>
+           
                     </ul>
                    
                    <ul class="navbar-nav ml-auto">
-                        <li class="nav-item active">
-                                <router-link class="nav-link" to="/register">Register</router-link>
+                        <li v-if="this.$store.state.isAuthenticated" class="nav-item active">
+                            <button @click="logout" class="btn btn-sm btn-danger" >Logout</button>
                         </li>
                    </ul>
                 </div>
@@ -42,7 +26,17 @@
 
 <script>
 export default {
+    name:'Nav',
+    methods:{
+        logout(){
+            this.$store.commit('SET_AUTH', false)
+            this.$store.commit('SET_TOKEN', null)
 
+            sessionStorage.clear();
+            
+            this.$router.push('/')
+        }
+    }
 }
 </script>
 

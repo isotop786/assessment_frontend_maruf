@@ -4,7 +4,7 @@
   <div class="col-md-4 text-center">
         <h4>Bucket Items</h4>
         <div v-if="products.length > 0">
-            <!-- <button @click.prevent="clearBucket()" class="btn btn-danger my-3">Clear Bucket</button> -->
+            <button @click.prevent="clearBucket()" class="btn btn-danger my-3">Clear Bucket</button>
             <ul  class="list-group">
                 <li v-for="p in products" :key="p[0]._id" class="list-group-item">{{p[0].name}}</li>
             </ul>
@@ -26,6 +26,7 @@ export default {
             URL:'https://assessment-backend-maruf.herokuapp.com/buckets',
             items:[],
             products:[],
+            config : {headers:{'Content-Type':'application/json', 'Authorization': 'Bearer '+this.$store.state.token}}
 
         }
     },
@@ -85,7 +86,9 @@ export default {
 
             axios.delete('/bucketsall/',config)
             .then((res)=>{
-                this.fetchData()
+                // this.fetchData()
+                this.$store.commit('CLEAR_BUCKET')
+                this.$router.go();
             })
             .catch((err)=>console.log(err))
         }
