@@ -31,7 +31,12 @@
                     <p class="text-danger mt-3 font-weight-bold">Invalid Credentials. Please try again with valid login name and password.</p>
                 </div>
             </form>
+            <div class="mt-4">
+                <p>loginName: test</p>
+                <p>password: 123456</p>
+            </div>
         </div>
+       
   </div>
 </template>
 
