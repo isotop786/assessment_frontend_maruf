@@ -24,6 +24,13 @@ export default new Vuex.Store({
 
     getBucketItem: (state)=> {
       return state.bucket;
+    },
+
+    getAuth: (state) =>{
+      if(state.isAuthenticated){
+        return true
+      }
+      return false;
     }
   },
   mutations: {
