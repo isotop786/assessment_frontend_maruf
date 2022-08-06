@@ -20,11 +20,15 @@
                     <input type="submit" class="btn btn-block loginBtn" value="Login">
                 </div>
 
-                <div v-else>
+                <div v-if="loading && !isError">
                     <button class="btn btn-primary btn-block" type="button" disabled>
                     <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
                         Login...
                     </button>
+                </div>
+
+                <div v-if="isError">
+                    <p class="text-danger mt-3 font-weight-bold">Invalid Credentials. Please try again with valid login name and password.</p>
                 </div>
             </form>
         </div>
@@ -42,7 +46,8 @@ export default {
             password:'123456',
             loginNameErr: false,
             passwordErr: false,
-            loading:false
+            loading:false,
+            isError:false
         }
     },
 
@@ -72,6 +77,7 @@ export default {
 
          proceedTo_Login(){
             this.loading = true
+            this.isError = false
             //  axios.post('/auth/signin',{loginName:this.loginName, password:this.password})
             axios({method:"POST", url:"/auth/signin/", data:{loginName:this.loginName,password:this.password}, withCredentials: true})
             .then((res=>{
@@ -88,7 +94,11 @@ export default {
             .then(()=> {
                 this.loading =false;
             })
-            .catch(err=>console.log(err))
+            .catch(err=>{
+                console.log("Login Error is: "+err)
+                this.isError = true
+                this.loading =false;
+            })
         }
     }
 
