@@ -2,18 +2,46 @@
   <div class="my-4">
        <div class="row mb-4">
             <div class="col-md-12">
-                <input type="text" name="" class="form-control" placeholder="Search Products" id="">
+                <div class="form-row">
+                <div class="form-group col-md-3">
+                    <!-- <label for="">Product Type</label> -->
+                    <select class="form-control" v-model="type">
+                        <option value="book">Book</option>
+                        <option value="game">Game</option>
+                        <option value="music">Music</option>
+                    </select>
+                </div>
+               <div class="form-group col-md-6">
+                    <!-- <label for="">Product Name</label> -->
+                   <input list="browsers" v-model="name" type="text" name="" class="form-control " placeholder="Search Products" @keyup.enter="search" id="">
+                   <datalist id="browsers">
+                        <option v-for="p in products" :key="p._id" :value="p.name"/>
+                 </datalist>
+               </div>
+               <div class="form-group col-md-3">
+                <!-- <label for=""></label> -->
+
+                <button v-if="!loading" @click="search" class="btn btn-primary btn-block">Search</button>
+
+                <div v-else>
+                    <button class="btn btn-primary btn-block" type="button" disabled>
+                    <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                        Searching...
+                    </button>
+                </div>
+               </div>
+                </div>
             </div>
        </div>
 
-       <div class="row">
+       <div v-if="products.length > 0"  class="row">
             <div v-for="product in products" :key="product._id" class="col-md-3">
-                <div id="cont" class="card p-2 card-img" >
-                    <img :src="product.image" class="card-img-top " alt="...">
+                <div id="cont" class="card p-2 my-3" >
+                    <img :src="product.image" class="card-img-top card-img" alt="...">
                     <div class="card-body">
                         <h5 class="card-title">{{product.name}}</h5>
                         <p><strong>Category: </strong>{{product.type.toUpperCase()}}</p>
-                        <p class="card-text">{{product.description.substring(0,100)+'...'}}</p>
+                        <p class="card-text">{{product.description.substring(0,50)+'...'}}</p>
                         
                         <div class="d-flex">
                             <button @click.prevent="launchModal(product._id,product.name,product.image)" class="btn btn-primary">Buy Now</button>
@@ -23,6 +51,18 @@
                     </div>
                     </div>
             </div>
+       </div>
+
+       <div v-if="products.length <1 && !isEmptyRes">
+            <div class="d-flex justify-content-center mt-4">
+            <div class="spinner-border" role="status">
+                <span class="sr-only">Loading...</span>
+            </div>
+            </div>
+       </div>
+
+       <div v-if="isEmptyRes" class="row">
+            <h4>No Product Found</h4>
        </div>
 
        <!-- Bucket Modal -->
@@ -92,6 +132,8 @@
 
 <script>
 import axios from 'axios'
+import { debounce } from "lodash";
+
 export default {
     name:'Products',
     data(){
@@ -101,7 +143,11 @@ export default {
             currentID: null,
             currentProductName: '',
             currentProductImage:'',
-            config : {headers:{'Content-Type':'application/json', 'Authorization': 'Bearer '+this.$store.state.token}}
+            config : {headers:{'Content-Type':'application/json', 'Authorization': 'Bearer '+this.$store.state.token}},
+            type:'',
+            name:'',
+            loading:false,
+            isEmptyRes: false,
         }
     },
 
@@ -151,11 +197,6 @@ export default {
 
         addToBucket()
         {
-            // data = {
-            //     quantity: this.quantity,
-            //     product: this.currentID,
-            //     user: this.$store.state.id
-            // }
 
             axios.post('/buckets/',
             {
@@ -172,6 +213,31 @@ export default {
             .catch(err=>{
                 console.log("Error is "+err)
             })
+        },
+
+        // search method
+        search(){
+
+            var config = {
+            headers:{
+                        'Content-Type' : 'application/json',
+                        'Authorization': 'Bearer '+this.$store.state.token
+                    },
+            }
+            this.loading = true;
+            this.isEmptyRes = false;
+            this.products = [];
+            axios.post('/products/search?name='+this.name+'&type='+this.type, config)
+            .then(res=>{
+                this.products = res.data.product
+                this.loading = false;
+
+                if(res.data.product.length ==0)
+                {
+                    this.isEmptyRes = true
+                }
+            })
+            .catch(err => console.log('Searching error is :'+err))
         }
     }
 }
@@ -182,8 +248,8 @@ export default {
 @media(min-width: 480px)
 {
     .card-img{
-        width: 16rem!important;
-        /* height: 20vh!important; */
+        /* width: 16rem!important; */
+        height: 30vh!important;
     }
 }
 

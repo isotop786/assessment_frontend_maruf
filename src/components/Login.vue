@@ -4,14 +4,14 @@
             <form action="#" @submit.prevent="login">
                 <div class="form-group">
                     <label for="Login Name">Login Name</label>
-                    <input v-model="loginName" type="text" name="" class="form-control" :class="loginNameErr &&  'is-invalid'" id="">
+                    <input  v-model="loginName" type="text" name="" class="form-control" :class="loginNameErr &&  'is-invalid'" id="">
                         <div v-if="loginNameErr" id="validationServer05Feedback" class="invalid-feedback">
                             Login Name can not be empty.
                         </div>
                 </div>
                 <div class="form-group">
                     <label for="Login Name">Password</label>
-                    <input v-model="password" type="password" name="" class="form-control" id="" :class="passwordErr &&  'is-invalid'" >
+                    <input  v-model="password" type="password" name="" class="form-control" id="" :class="passwordErr &&  'is-invalid'" >
                     <div v-if="passwordErr" id="validationServer05Feedback" class="invalid-feedback">
                             Password can not be empty.
                     </div>
@@ -38,8 +38,8 @@ export default {
     data(){
         return{
             URL:'https://assessment-backend-maruf.herokuapp.com/auth/signin',
-            loginName: '',
-            password:'',
+            loginName: 'test',
+            password:'123456',
             loginNameErr: false,
             passwordErr: false,
             loading:false

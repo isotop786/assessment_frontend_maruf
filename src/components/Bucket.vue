@@ -5,8 +5,9 @@
         <h4>Bucket Items</h4>
         <div v-if="products.length > 0">
             <button @click.prevent="clearBucket()" class="btn btn-danger my-3">Clear Bucket</button>
-            <ul  class="list-group">
+            <ul  class="list-group " >
                 <li v-for="p in products" :key="p[0]._id" class="list-group-item">{{p[0].name}}</li>
+                
             </ul>
         </div>
         
@@ -26,7 +27,8 @@ export default {
             URL:'https://assessment-backend-maruf.herokuapp.com/buckets',
             items:[],
             products:[],
-            config : {headers:{'Content-Type':'application/json', 'Authorization': 'Bearer '+this.$store.state.token}}
+            config : {headers:{'Content-Type':'application/json', 'Authorization': 'Bearer '+this.$store.state.token}},
+            result:[],
 
         }
     },
@@ -34,6 +36,7 @@ export default {
     created(){
 
          this.fetchData();
+
     },
 
     updated(){
@@ -73,6 +76,8 @@ export default {
                     
                 })
             })
+
+            
         })
         },
 
