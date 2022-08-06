@@ -20,6 +20,7 @@
 
 <script>
 import axios from 'axios'
+import { mapGetters } from 'vuex'
 export default {
     name:'Bucket',
     data(){
@@ -29,17 +30,22 @@ export default {
             products:[],
             config : {headers:{'Content-Type':'application/json', 'Authorization': 'Bearer '+this.$store.state.token}},
             result:[],
+            bucket_arr:[]
 
         }
     },
+    computed:{
+        ...mapGetters([
+            'getBucketItem'
+        ])
+    },  
 
     created(){
-
          this.fetchData();
-
     },
 
     updated(){
+        ;
     },
 
 
@@ -53,26 +59,44 @@ export default {
                     },
             }
 
+            var quanity_arr = []
+
         axios.get(this.URL,config)
         .then(res=>{
             console.log(res.data)
             this.items = res.data.item
             // console.log(this.items)
+            
 
             this.items.map(item=>{
-
-                if(!this.$store.state.bucketProducts.includes(item.product))
-                {
-                    this.$store.commit('SET_BUCKETPRODUCTS',item.product)
-                }
+                quanity_arr.push(item.quantity)
 
                 })
+
+                var obj ={}
 
             this.items.map(item => {
                 axios.get(`/products/${item.product}`,config)
                 .then(res=>{
 
                     this.products.push(res.data.product)
+                    
+                    res.data.product.map((o,index)=>{
+                        obj['id'] = o._id
+                        obj['name'] = o.name;
+                        obj['quantity'] = quanity_arr[index]
+
+                    })
+
+                   if(!this.$store.state.bucketProducts.includes(item.product))
+                    {
+                            this.$store.commit('SET_BUCKETPRODUCTS',item.product)
+                            this.$store.commit('SET_BUCKET',obj)
+                        
+                    }
+
+                    
+
                     
                 })
             })

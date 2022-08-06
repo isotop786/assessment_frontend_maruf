@@ -95,7 +95,13 @@
             </div>
             <div class="modal-footer">
                 <button id="closeBtn" type="button" @click.prevent="quantity=1" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button type="button" @click.prevent="addToBucket" class="btn btn-success">Add To Bucket</button>
+                <button v-if="!isAddingBucket" type="button" @click.prevent="addToBucket" class="btn btn-success">Add To Bucket</button>
+                <div v-else>
+                    <button class="btn btn-primary btn-block" type="button" disabled>
+                    <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                        Adding to Bucket...
+                    </button>
+                </div>
             </div>
             </div>
         </div>
@@ -148,6 +154,7 @@ export default {
             name:'',
             loading:false,
             isEmptyRes: false,
+            isAddingBucket:false,
         }
     },
 
@@ -197,7 +204,7 @@ export default {
 
         addToBucket()
         {
-
+            this.isAddingBucket = true;
             axios.post('/buckets/',
             {
                 quantity: this.quantity,
@@ -208,7 +215,10 @@ export default {
             .then(res =>{
                 this.quantity =1;
                 document.getElementById('closeBtn').click();
+                this.isAddingBucket = false
+
                 this.$router.go();
+                
             })
             .catch(err=>{
                 console.log("Error is "+err)

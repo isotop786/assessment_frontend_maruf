@@ -16,10 +16,15 @@ export default new Vuex.Store({
     user: {},
     isAdmin: false,
     isAuthenticated : false,
-    bucketProducts:[]
+    bucketProducts:[],
+    bucket:[]
     
   },
   getters: {
+
+    getBucketItem: (state)=> {
+      return state.bucket;
+    }
   },
   mutations: {
 
@@ -55,6 +60,12 @@ export default new Vuex.Store({
     CLEAR_BUCKET(state)
     {
       state.bucketProducts = [];
+      state.bucket = [];
+    },
+
+    SET_BUCKET(state, payload)
+    {
+      state.bucket.push(payload)
     }
     
   },
