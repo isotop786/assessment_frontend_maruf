@@ -3,12 +3,19 @@
 <div class="col-md-4"></div>
   <div class="col-md-4 text-center">
         <h4>Bucket Items</h4>
-        <div v-if="products.length > 0">
+        <div v-if="items.length > 0">
             <button @click.prevent="clearBucket()" class="btn btn-danger my-3">Clear Bucket</button>
-            <ul  class="list-group " >
-                <li v-for="p in products" :key="p[0]._id" class="list-group-item">{{p[0].name}}</li>
-                
-            </ul>
+
+            <table class="table table-dark">
+                <tr>
+                    <td>Product</td>
+                    <td>Quantity</td>
+                </tr>
+                <tr v-for="item in items" :key="item._id">
+                    <td>{{item.product.name}}</td>
+                    <td>{{item.quantity}}</td>
+                </tr>
+            </table>
         </div>
         
 
@@ -45,7 +52,7 @@ export default {
     },
 
     updated(){
-        ;
+
     },
 
 
@@ -59,49 +66,12 @@ export default {
                     },
             }
 
-            var quanity_arr = []
 
-        axios.get(this.URL,config)
+        axios.get('/buckets/',config)
         .then(res=>{
-            console.log(res.data)
+            
             this.items = res.data.item
-            // console.log(this.items)
-            
-
-            this.items.map(item=>{
-                quanity_arr.push(item.quantity)
-
-                })
-
-                var obj ={}
-
-            this.items.map(item => {
-                axios.get(`/products/${item.product}`,config)
-                .then(res=>{
-
-                    this.products.push(res.data.product)
-                    
-                    res.data.product.map((o,index)=>{
-                        obj['id'] = o._id
-                        obj['name'] = o.name;
-                        obj['quantity'] = quanity_arr[index]
-
-                    })
-
-                   if(!this.$store.state.bucketProducts.includes(item.product))
-                    {
-                            this.$store.commit('SET_BUCKETPRODUCTS',item.product)
-                            this.$store.commit('SET_BUCKET',obj)
-                        
-                    }
-
-                    
-
-                    
-                })
-            })
-
-            
+  
         })
         },
 
@@ -115,7 +85,7 @@ export default {
 
             axios.delete('/bucketsall/',config)
             .then((res)=>{
-                // this.fetchData()
+                
                 this.$store.commit('CLEAR_BUCKET')
                 this.$router.go();
             })
