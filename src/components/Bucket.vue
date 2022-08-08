@@ -70,7 +70,14 @@ export default {
         axios.get('/buckets/',config)
         .then(res=>{
             
+            this.$store.commit('CLEAR_BUCKET')
             this.items = res.data.item
+
+            this.items.map(item=> {
+
+                  this.$store.commit('SET_BUCKETPRODUCTS', item.product._id)
+  
+            })
   
         })
         },
